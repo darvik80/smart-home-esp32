@@ -3,7 +3,8 @@
 #include "MyProps.h"
 #include <Arduino.h>
 #include "service/Application.h"
-#include "Esp32MqttService.h"
+#include "IotService.h"
+#include "SystemMonitoringService.h"
 
 class SmartHomeApp : public Application {
 public:
@@ -19,12 +20,17 @@ public:
         props->setStr(PROP_WIFI_SSID, WIFI_SSID);
         props->setStr(PROP_WIFI_PASS, WIFI_PASS);
 
-        getRegistry()->create<Esp32MqttService>();
+        getRegistry()->create<IotService>();
+        getRegistry()->create<SystemMonitoringService>();
         Application::setup();
+
+        getRegistry()->getService<DisplayService>(LibServiceId::OLED)->setText(4, "Device is ready");
     }
 };
 
 SmartHomeApp app;
+
+#include <pins_arduino.h>
 
 void setup() {
 // write your initialization code here

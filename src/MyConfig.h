@@ -5,3 +5,5 @@
 #pragma once
 
 #define WIFI_SERVICE
+
+#define OLED_SERVICE
