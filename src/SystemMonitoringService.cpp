@@ -20,13 +20,13 @@ void SystemMonitoringService::setup() {
     }
 
     _ticker.attach_ms<SystemMonitoringService *>(5000, [](SystemMonitoringService *service) {
-        float result;
-        if (ESP_OK == temp_sensor_read_celsius(&result)) {
-            SystemMonitoringEvent event;
-            event.cpuTemp = result;
-            sendMessage(service->getMessageBus(),event);
+        SystemMonitoringEvent event;
+        if (ESP_OK == temp_sensor_read_celsius(&event.cpuTemp)) {
+            sendMessage(service->getMessageBus(), event);
         } else {
             logging::warning("can't init get temp from sensor");
         }
     }, this);
+
+    logging::info("system-monitoring configured");
 }

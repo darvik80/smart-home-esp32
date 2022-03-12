@@ -13,7 +13,8 @@ enum UserMessageId {
 };
 
 enum UserServiceId {
-    SYSTEM_MONITOR = USER_SERVICES
+    SYSTEM_MONITOR = USER_SERVICES,
+    IOT
 };
 
 struct SystemMonitoringEvent : TMessage<SYS_MON> {

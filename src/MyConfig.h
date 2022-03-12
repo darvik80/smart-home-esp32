@@ -7,3 +7,5 @@
 #define WIFI_SERVICE
 
 #define OLED_SERVICE
+
+#define MQTT_SERVICE

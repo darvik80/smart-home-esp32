@@ -20,6 +20,12 @@ public:
         props->setStr(PROP_WIFI_SSID, WIFI_SSID);
         props->setStr(PROP_WIFI_PASS, WIFI_PASS);
 
+        // MQTT
+        props->setStr(PROP_MQTT_SERVER_HOST, MQTT_SERVER_HOST);
+        props->setUint16(PROP_MQTT_SERVER_PORT, MQTT_SERVER_PORT);
+        props->setStr(PROP_MQTT_CLIENT_ID, MQTT_CLIENT_ID);
+        props->setStr(PROP_MQTT_USER, MQTT_ACCESS_TOKEN);
+
         getRegistry()->create<IotService>();
         getRegistry()->create<SystemMonitoringService>();
         Application::setup();
