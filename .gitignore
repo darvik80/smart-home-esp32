@@ -3,4 +3,4 @@
 CMakeListsPrivate.txt
 cmake-build-*/ 
 src/MyProps.h
-resources/server.pem
+src/cert
