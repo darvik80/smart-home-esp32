@@ -1,5 +1,4 @@
 #include <logging/Logging.h>
-#include "MyConfig.h"
 #include "MyProps.h"
 #include <Arduino.h>
 #include "service/Application.h"
@@ -10,23 +9,22 @@
 class SmartHomeApp : public Application {
 public:
     SmartHomeApp()
-            : Application(logging::level::info, new TMessageBus<10>()) {
+            : Application(logging::level::info) {
 
     }
 
-    void setup() override {
+    void setup(Registry &registry) override {
         logging::debug("setup");
         esp_log_level_set("*", ESP_LOG_INFO);
         esp_log_level_set("esp-tls", ESP_LOG_VERBOSE);
-        esp_log_level_set("MQTT_CLIENT", ESP_LOG_VERBOSE);
         esp_log_level_set("TRANSPORT_BASE", ESP_LOG_VERBOSE);
         esp_log_level_set("TRANSPORT", ESP_LOG_VERBOSE);
         esp_log_level_set("OUTBOX", ESP_LOG_VERBOSE);
 
-        auto props = getRegistry()->getProperties();
+        auto &props = registry.getProperties();
         // Wifi
-        props->setStr(PROP_WIFI_SSID, WIFI_SSID);
-        props->setStr(PROP_WIFI_PASS, WIFI_PASS);
+        props.setStr(PROP_WIFI_SSID, WIFI_SSID);
+        props.setStr(PROP_WIFI_PASS, WIFI_PASS);
 
         // MQTT
         auto mqttProps = new MqttProperties{
@@ -37,22 +35,23 @@ public:
                 .certDev = cert_dev,
                 .rootCa = root_ca,
         };
-        props->setProperty(PROP_MQTT_PROPS, mqttProps);
+        props.setProperty(PROP_MQTT_PROPS, mqttProps);
 
-        getRegistry()->create<IotYaCoreService>();
-        getRegistry()->create<SystemMonitoringService>();
-        Application::setup();
+        registry.create<IotYaCoreService>();
+        registry.create<SystemMonitoringService>();
 
-        getRegistry()->getService<DisplayService>(LibServiceId::OLED)->setText(4, "Device is ready");
+        Application::setup(registry);
     }
 };
+
+TRegistry<TMessageBus<10, 2>> registry;
 
 SmartHomeApp app;
 
 void setup() {
-    app.setup();
+    app.setup(registry);
 }
 
 void loop() {
-    app.loop();
+    app.loop(registry);
 }

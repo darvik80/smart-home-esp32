@@ -4,20 +4,11 @@
 
 #pragma once
 
-#include <Ticker.h>
-#include "service/Service.h"
-#include "UserMessage.h"
+#include "system/Timer.h"
+#include "service/Registry.h"
+#include "UserServiceId.h"
 
-class SystemMonitoringService : public Service {
-    Ticker _ticker;
+class SystemMonitoringService : public TService<Service_SysMonitor> {
 public:
-    explicit SystemMonitoringService(IRegistry *registry) : Service(registry) {}
-
-    [[nodiscard]] ServiceId getServiceId() const override {
-        return SYSTEM_MONITOR;
-    }
-
-    void setup() override;
-private:
-    void onTimer();
+    void setup(Registry &registry) override;
 };
