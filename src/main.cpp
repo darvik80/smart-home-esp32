@@ -1,6 +1,8 @@
 #include <logging/Logging.h>
 #include "MyProps.h"
 #include <Arduino.h>
+
+#include <memory>
 #include "service/Application.h"
 #include "service/iot/IotYaCoreService.h"
 #include "SystemMonitoringService.h"
@@ -8,10 +10,7 @@
 
 class SmartHomeApp : public TApplication<TRegistry<TMessageBus<10, 2>>> {
 public:
-    SmartHomeApp()
-            : TApplication(logging::level::info) {
-
-    }
+    SmartHomeApp() : TApplication(logging::level::info) {}
 
     void setup() override {
         logging::debug("setup");
@@ -39,12 +38,13 @@ public:
     }
 };
 
-SmartHomeApp app;
+std::unique_ptr<SmartHomeApp> app;
 
 void setup() {
-    app.setup();
+    app = std::make_unique<SmartHomeApp>();
+    app->setup();
 }
 
 void loop() {
-    app.loop();
+    app->loop();
 }
