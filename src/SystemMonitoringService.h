@@ -10,5 +10,7 @@
 
 class SystemMonitoringService : public TService<Service_SysMonitor> {
 public:
-    void setup(Registry &registry) override;
+    using TService<Service_SysMonitor>::TService;
+
+    void setup() override;
 };

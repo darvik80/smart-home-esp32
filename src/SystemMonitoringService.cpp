@@ -8,7 +8,7 @@
 #include <driver/temp_sensor.h>
 #include "ArduinoJson.h"
 
-void SystemMonitoringService::setup(Registry &registry) {
+void SystemMonitoringService::setup() {
     temp_sensor_config_t cfg = TSENS_CONFIG_DEFAULT();
     if (ESP_OK != temp_sensor_set_config(cfg)) {
         logging::warning("can't init temp sensor");
@@ -20,7 +20,7 @@ void SystemMonitoringService::setup(Registry &registry) {
         return;
     }
 
-    schedule(registry.getMessageBus(), 1000, true, [&registry, this]() {
+    schedule(getRegistry().getMessageBus(), 5000, true, [this]() {
         float cpuTemp = {};
         if (ESP_OK == temp_sensor_read_celsius(&cpuTemp)) {
             DynamicJsonDocument doc(128);
@@ -28,7 +28,7 @@ void SystemMonitoringService::setup(Registry &registry) {
             String data;
             serializeJson(doc, data);
 
-            sendMessage(registry.getMessageBus(), IoTTelemetry{data.c_str()});
+            sendMessage(getRegistry().getMessageBus(), IoTTelemetry{data.c_str()});
             logging::info("send cpu mon: {}", data.c_str());
         } else {
             logging::warning("can't init get temp from sensor");
@@ -37,4 +37,5 @@ void SystemMonitoringService::setup(Registry &registry) {
 
     logging::info("system-monitoring configured");
 }
+
 
